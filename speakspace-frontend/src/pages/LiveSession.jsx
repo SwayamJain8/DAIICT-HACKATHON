@@ -29,7 +29,7 @@ const LiveSession = () => {
     fetchSession();
   }, [id]);
 
-  // When session fetched, join socket room only once
+  // When session details are available, join the socket room only once
   useEffect(() => {
     if (!joinedRef.current && session) {
       socket.emit("joinRoom", { sessionId: id, user });
@@ -37,7 +37,7 @@ const LiveSession = () => {
     }
   }, [id, user, session]);
 
-  // Listen for new chat messages
+  // Listen for chat messages
   useEffect(() => {
     const handleNewMessage = (data) => {
       setMessages((prev) => [...prev, data]);
@@ -48,11 +48,34 @@ const LiveSession = () => {
     };
   }, []);
 
-  // Listen for sessionStarted event to update startTime & duration across clients
+  // Listen for new participant event to update session participants live
+  useEffect(() => {
+    const handleParticipantJoined = (newParticipant) => {
+      setSession((prevSession) => {
+        if (!prevSession) return prevSession;
+        // Check if the participant already exists (by _id)
+        const exists = prevSession.participants.some(
+          (p) => p._id === newParticipant._id
+        );
+        if (!exists) {
+          return {
+            ...prevSession,
+            participants: [...prevSession.participants, newParticipant],
+          };
+        }
+        return prevSession;
+      });
+    };
+    socket.on("participantJoined", handleParticipantJoined);
+    return () => {
+      socket.off("participantJoined", handleParticipantJoined);
+    };
+  }, []);
+
+  // Listen for sessionStarted and timeUp events
   useEffect(() => {
     socket.on("sessionStarted", (data) => {
-      // data contains startTime and duration
-      // Update session with these values so timer can start
+      // Update session state with startTime and duration
       setSession((prev) => ({
         ...prev,
         started: true,
@@ -61,7 +84,6 @@ const LiveSession = () => {
       }));
     });
     socket.on("timeUp", () => {
-      // When time is up, navigate to Time Up page
       navigate("/timeup");
     });
     return () => {
@@ -86,17 +108,22 @@ const LiveSession = () => {
     return () => clearInterval(timerRef.current);
   }, [session]);
 
+  // Send message with role appended (if evaluator or moderator)
   const sendMessage = () => {
     if (message.trim() === "") return;
+    const senderName =
+      user.role === "moderator" || user.role === "evaluator"
+        ? `${user.name} (${user.role})`
+        : user.name;
     socket.emit("sendMessage", {
       sessionId: id,
-      sender: user.name,
+      sender: senderName,
       text: message,
     });
     setMessage("");
   };
 
-  // For moderator: allow starting session if not yet started.
+  // For moderator: allow starting session if not yet started
   const startSession = async () => {
     try {
       const res = await axios.post(
@@ -112,7 +139,7 @@ const LiveSession = () => {
     <div style={{ padding: "1rem" }}>
       <h2>Live Session: {session ? session.topic : id}</h2>
 
-      {/* Display countdown timer if session started */}
+      {/* Countdown Timer */}
       {session && session.started && countdown !== null && (
         <div style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
           Time Remaining: {Math.floor(countdown / 60)}:
@@ -120,7 +147,7 @@ const LiveSession = () => {
         </div>
       )}
 
-      {/* For moderator, show Start Session button if not started */}
+      {/* Moderator's Start Session Button */}
       {user.role === "moderator" && session && !session.started && (
         <button
           onClick={startSession}
@@ -161,7 +188,7 @@ const LiveSession = () => {
         </button>
       </div>
 
-      {/* For evaluators, render FeedbackForm. Pass only participants with role "participant". */}
+      {/* For evaluators: render FeedbackForm; pass only participants with role 'participant' */}
       {user.role === "evaluator" && session && (
         <FeedbackForm
           sessionId={id}

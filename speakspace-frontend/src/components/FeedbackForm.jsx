@@ -4,13 +4,17 @@ import axios from "axios";
 
 const FeedbackForm = ({ sessionId, participants = [] }) => {
   const [participantId, setParticipantId] = useState("");
-  const [communication, setCommunication] = useState(3);
-  const [clarity, setClarity] = useState(3);
-  const [teamwork, setTeamwork] = useState(3);
+  const [communication, setCommunication] = useState(0);
+  const [clarity, setClarity] = useState(0);
+  const [teamwork, setTeamwork] = useState(0);
   const [comments, setComments] = useState("");
 
   const handleSubmit = async () => {
     const evaluator = JSON.parse(localStorage.getItem("user"));
+    if (!participantId) {
+      alert("Please select a participant.");
+      return;
+    }
     try {
       await axios.post("http://localhost:5000/api/feedback/submit", {
         sessionId,
@@ -24,9 +28,37 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
       alert("Feedback submitted!");
       setParticipantId("");
       setComments("");
-    } catch {
+      setCommunication(0);
+      setClarity(0);
+      setTeamwork(0);
+    } catch (err) {
       alert("Feedback submission failed");
+      console.error(err);
     }
+  };
+
+  // Render radio buttons for 0-10 ratings
+  const renderRadioGroup = (label, selectedValue, setValue) => {
+    const options = Array.from({ length: 11 }, (_, i) => i);
+    return (
+      <div style={{ margin: "0.5rem 0" }}>
+        <div>{label}:</div>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {options.map((option) => (
+            <label key={option} style={{ marginRight: "1rem" }}>
+              <input
+                type="radio"
+                name={label}
+                value={option}
+                checked={selectedValue === option}
+                onChange={() => setValue(option)}
+              />
+              {option}
+            </label>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -49,39 +81,9 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
           ))}
         </select>
       </div>
-      <div style={{ margin: "0.5rem 0" }}>
-        <label>Communication: </label>
-        <input
-          type="number"
-          value={communication}
-          onChange={(e) => setCommunication(e.target.value)}
-          min="1"
-          max="5"
-          style={{ width: "50px" }}
-        />
-      </div>
-      <div style={{ margin: "0.5rem 0" }}>
-        <label>Clarity: </label>
-        <input
-          type="number"
-          value={clarity}
-          onChange={(e) => setClarity(e.target.value)}
-          min="1"
-          max="5"
-          style={{ width: "50px" }}
-        />
-      </div>
-      <div style={{ margin: "0.5rem 0" }}>
-        <label>Teamwork: </label>
-        <input
-          type="number"
-          value={teamwork}
-          onChange={(e) => setTeamwork(e.target.value)}
-          min="1"
-          max="5"
-          style={{ width: "50px" }}
-        />
-      </div>
+      {renderRadioGroup("Communication", communication, setCommunication)}
+      {renderRadioGroup("Clarity", clarity, setClarity)}
+      {renderRadioGroup("Teamwork", teamwork, setTeamwork)}
       <textarea
         placeholder="Comments"
         value={comments}

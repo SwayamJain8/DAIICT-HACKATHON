@@ -82,12 +82,10 @@ const startSession = async (req, res) => {
     await session.save();
 
     // Emit to all sockets in this session room that session has started.
-    global.io
-      .to(id)
-      .emit("sessionStarted", {
-        startTime: session.startTime,
-        duration: session.duration,
-      });
+    global.io.to(id).emit("sessionStarted", {
+      startTime: session.startTime,
+      duration: session.duration,
+    });
 
     // Schedule deletion/end of session after duration (in ms)
     setTimeout(async () => {
@@ -113,6 +111,19 @@ const getPublicSessions = async (req, res) => {
   }
 };
 
+const getMySessions = async (req, res) => {
+  const { userId } = req.query; // Expecting moderator's userId in query parameters
+  try {
+    const sessions = await Session.find({
+      createdBy: userId,
+      status: "waiting", // If you only want waiting sessions; remove this line if you want all
+    });
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch sessions" });
+  }
+};
+
 module.exports = {
   createSession,
   joinSession,
@@ -120,4 +131,5 @@ module.exports = {
   joinSessionByCode,
   startSession,
   getPublicSessions,
+  getMySessions,
 };

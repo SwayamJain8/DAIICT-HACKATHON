@@ -1,14 +1,17 @@
 // src/components/Navbar.jsx
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Navbar = () => {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user"));
-    setUser(u);
-  }, []);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setUser(null);
+    navigate("/");
+  };
 
   return (
     <nav
@@ -26,14 +29,7 @@ const Navbar = () => {
         <div>
           {user.name} - <em>{user.role}</em>
           &nbsp;|&nbsp;
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/");
-            }}
-          >
-            Logout
-          </button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       )}
     </nav>

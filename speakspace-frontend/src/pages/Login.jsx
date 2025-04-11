@@ -1,12 +1,14 @@
 // src/pages/Login.jsx
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const handleLogin = async () => {
     try {
@@ -14,8 +16,11 @@ const Login = () => {
         email,
         password,
       });
+      // Store in localStorage
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);
+      // Update AuthContext
+      setUser(res.data.user);
       navigate("/dashboard");
     } catch (err) {
       alert("Login failed!");
@@ -41,8 +46,8 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button
-        style={{ width: "100%", padding: "0.5rem" }}
         onClick={handleLogin}
+        style={{ width: "100%", padding: "0.5rem" }}
       >
         Login
       </button>

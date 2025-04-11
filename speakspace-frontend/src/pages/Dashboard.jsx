@@ -9,25 +9,19 @@ const Dashboard = () => {
   const [createdSessions, setCreatedSessions] = useState([]);
 
   useEffect(() => {
-    // Get user from localStorage
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser) {
       navigate("/");
     } else {
       setUser(storedUser);
-      // If moderator, fetch sessions created by this moderator (that are waiting)
+      // For moderator, fetch all sessions (public or private) they've created (waiting state)
       if (storedUser.role === "moderator") {
         axios
-          .get("http://localhost:5000/api/sessions/public")
+          .get(
+            `http://localhost:5000/api/sessions/mySessions?userId=${storedUser._id}`
+          )
           .then((res) => {
-            // Sometimes createdBy is just a string or an object with an _id. Handle both:
-            const mySessions = res.data.filter((s) => {
-              if (typeof s.createdBy === "object" && s.createdBy !== null) {
-                return s.createdBy._id === storedUser._id;
-              }
-              return s.createdBy === storedUser._id;
-            });
-            setCreatedSessions(mySessions);
+            setCreatedSessions(res.data);
           })
           .catch((err) => console.error("Error fetching sessions", err));
       }

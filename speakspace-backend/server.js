@@ -26,19 +26,24 @@ const io = new Server(server, {
 
 // Save io instance globally for use in controllers
 global.io = io;
-
+// In server.js (inside io.on("connection", ...))
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
   socket.on("joinRoom", ({ sessionId, user }) => {
     socket.join(sessionId);
-    // Send system message to other users in the room
+    // Send system message to other clients in the room (except the joining socket)
     socket
       .to(sessionId)
       .emit("newMessage", {
         sender: "System",
         text: `${user.name} joined the session`,
       });
+
+    // If the joining user is a participant, broadcast a participantJoined event
+    if (user.role === "participant") {
+      io.to(sessionId).emit("participantJoined", user);
+    }
   });
 
   socket.on("sendMessage", ({ sessionId, sender, text }) => {

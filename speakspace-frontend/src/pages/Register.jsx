@@ -1,7 +1,8 @@
 // src/pages/Register.jsx
-import { useState } from "react";
+import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -9,6 +10,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("participant");
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const handleRegister = async () => {
     try {
@@ -20,6 +22,7 @@ const Register = () => {
       });
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);
+      setUser(res.data.user);
       navigate("/dashboard");
     } catch (err) {
       alert("Registration failed!");
@@ -61,8 +64,8 @@ const Register = () => {
         <option value="evaluator">Evaluator</option>
       </select>
       <button
-        style={{ width: "100%", padding: "0.5rem" }}
         onClick={handleRegister}
+        style={{ width: "100%", padding: "0.5rem" }}
       >
         Register
       </button>
