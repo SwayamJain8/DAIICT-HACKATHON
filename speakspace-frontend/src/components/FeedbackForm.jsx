@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const FeedbackForm = ({ sessionId }) => {
+const FeedbackForm = ({ sessionId, participants = [] }) => {
   const [participantId, setParticipantId] = useState("");
   const [communication, setCommunication] = useState(3);
   const [clarity, setClarity] = useState(3);
@@ -22,12 +22,10 @@ const FeedbackForm = ({ sessionId }) => {
         comments,
       });
       alert("Feedback submitted!");
-      // Optionally clear the form:
       setParticipantId("");
       setComments("");
-    } catch (err) {
+    } catch {
       alert("Feedback submission failed");
-      console.error(err);
     }
   };
 
@@ -36,13 +34,21 @@ const FeedbackForm = ({ sessionId }) => {
       style={{ marginTop: "2rem", padding: "1rem", border: "1px solid #aaa" }}
     >
       <h3>Submit Feedback</h3>
-      <input
-        style={{ width: "100%", margin: "0.5rem 0" }}
-        type="text"
-        placeholder="Participant ID"
-        value={participantId}
-        onChange={(e) => setParticipantId(e.target.value)}
-      />
+      <div style={{ margin: "0.5rem 0" }}>
+        <label>Select Participant: </label>
+        <select
+          value={participantId}
+          onChange={(e) => setParticipantId(e.target.value)}
+          style={{ width: "100%", marginTop: "0.5rem", padding: "0.5rem" }}
+        >
+          <option value="">-- Select Participant --</option>
+          {participants.map((participant) => (
+            <option key={participant._id} value={participant._id}>
+              {participant.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div style={{ margin: "0.5rem 0" }}>
         <label>Communication: </label>
         <input
@@ -77,12 +83,15 @@ const FeedbackForm = ({ sessionId }) => {
         />
       </div>
       <textarea
-        style={{ width: "100%", margin: "0.5rem 0" }}
         placeholder="Comments"
         value={comments}
         onChange={(e) => setComments(e.target.value)}
+        style={{ width: "100%", margin: "0.5rem 0", padding: "0.5rem" }}
       />
-      <button onClick={handleSubmit} style={{ padding: "0.5rem" }}>
+      <button
+        onClick={handleSubmit}
+        style={{ padding: "0.5rem", width: "100%" }}
+      >
         Submit Feedback
       </button>
     </div>

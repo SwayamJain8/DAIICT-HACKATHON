@@ -21,18 +21,18 @@ app.use("/api/feedback", require("./routes/feedbackRoutes"));
 // Create HTTP server and integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
+  cors: { origin: "*" },
 });
 
-// In server.js (backend)
+// Save io instance globally for use in controllers
+global.io = io;
+
 io.on("connection", (socket) => {
   console.log("Socket connected:", socket.id);
 
   socket.on("joinRoom", ({ sessionId, user }) => {
     socket.join(sessionId);
-    // Send a system message only once
+    // Send system message to other users in the room
     socket
       .to(sessionId)
       .emit("newMessage", {
@@ -50,6 +50,5 @@ io.on("connection", (socket) => {
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
