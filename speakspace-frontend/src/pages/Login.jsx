@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -29,31 +28,38 @@ const Login = () => {
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "400px", margin: "auto" }}>
-      <h2>Login</h2>
-      <input
-        style={{ width: "100%", margin: "0.5rem 0" }}
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        style={{ width: "100%", margin: "0.5rem 0" }}
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        onClick={handleLogin}
-        style={{ width: "100%", padding: "0.5rem" }}
-      >
-        Login
-      </button>
-      <p>
-        Don't have an account? <Link to="/register">Register here</Link>
-      </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold text-teal-400 text-center mb-6">
+          Login
+        </h2>
+        <input
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          onClick={handleLogin}
+          className="w-full p-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer "
+        >
+          Login
+        </button>
+        <p className="text-gray-400 text-center mt-4">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-teal-400 hover:underline">
+            Register here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

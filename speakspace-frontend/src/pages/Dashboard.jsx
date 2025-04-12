@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,7 +13,6 @@ const Dashboard = () => {
       navigate("/");
     } else {
       setUser(storedUser);
-      // For moderator, fetch all sessions (public or private) they've created (waiting state)
       if (storedUser.role === "moderator") {
         axios
           .get(
@@ -30,72 +28,79 @@ const Dashboard = () => {
 
   if (!user)
     return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>Loading...</div>
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading...
+      </div>
     );
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white p-6 pt-20">
+      <h2 className="text-3xl font-bold text-center mb-6">
         Welcome {user.name} ({user.role})
       </h2>
       {user.role === "moderator" ? (
         <>
-          <button
-            onClick={() => navigate("/create")}
-            style={{ padding: "0.5rem", margin: "0.5rem" }}
-          >
-            Create Session
-          </button>
-          <h3>Your Created Sessions (Waiting)</h3>
+          <div className="flex justify-center space-x-4 mb-6">
+            <button
+              onClick={() => navigate("/create")}
+              className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer "
+            >
+              Create Session
+            </button>
+          </div>
+          <h3 className="text-2xl font-semibold text-center mb-4">
+            Your Created Sessions (Waiting)
+          </h3>
           {createdSessions.length === 0 ? (
-            <p>No sessions created yet.</p>
+            <p className="text-center text-gray-400">
+              No sessions created yet.
+            </p>
           ) : (
-            createdSessions.map((session) => (
-              <div
-                key={session._id}
-                style={{
-                  border: "1px solid #ccc",
-                  margin: "0.5rem",
-                  padding: "1rem",
-                  cursor: "pointer",
-                }}
-                onClick={() => navigate(`/join/${session._id}`)}
-              >
-                <p>
-                  <strong>Topic:</strong> {session.topic}
-                </p>
-                <p>
-                  <strong>Session Code:</strong> {session.sessionCode}
-                </p>
-                <p>
-                  <strong>Duration:</strong> {session.duration} minutes
-                </p>
-              </div>
-            ))
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {createdSessions.map((session) => (
+                <div
+                  key={session._id}
+                  className="bg-gray-800 p-4 rounded-lg shadow-lg hover:shadow-teal-400 transition duration-300 cursor-pointer"
+                  onClick={() => navigate(`/join/${session._id}`)}
+                >
+                  <p className="text-lg font-bold text-teal-400">
+                    Topic: {session.topic}
+                  </p>
+                  <p className="text-gray-300">
+                    <strong>Session Code:</strong> {session.sessionCode}
+                  </p>
+                  <p className="text-gray-300">
+                    <strong>Duration:</strong> {session.duration} minutes
+                  </p>
+                </div>
+              ))}
+            </div>
           )}
         </>
       ) : (
         <>
-          <button
-            onClick={() => navigate("/publicSessions")}
-            style={{ padding: "0.5rem", margin: "0.5rem" }}
-          >
-            Join Public Session
-          </button>
-          <button
-            onClick={() => navigate("/joinByCode")}
-            style={{ padding: "0.5rem", margin: "0.5rem" }}
-          >
-            Join by Code
-          </button>
-          {user.role === "participant" && (
+          <div className="flex justify-center space-x-4 mb-6">
             <button
-              onClick={() => navigate("/analytics")}
-              style={{ padding: "0.5rem", margin: "0.5rem" }}
+              onClick={() => navigate("/publicSessions")}
+              className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer"
             >
-              View Feedback
+              Join Public Session
             </button>
-          )}
+            <button
+              onClick={() => navigate("/joinByCode")}
+              className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer"
+            >
+              Join by Code
+            </button>
+            {user.role === "participant" && (
+              <button
+                onClick={() => navigate("/analytics")}
+                className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer"
+              >
+                View Feedback
+              </button>
+            )}
+          </div>
         </>
       )}
     </div>

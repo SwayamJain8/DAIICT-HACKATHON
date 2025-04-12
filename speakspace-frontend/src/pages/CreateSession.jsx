@@ -1,4 +1,3 @@
-// src/pages/CreateSession.jsx
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -29,45 +28,48 @@ const CreateSession = () => {
   };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "400px", margin: "auto" }}>
-      <h2>Create New Session</h2>
-      <input
-        type="text"
-        placeholder="Discussion Topic"
-        value={topic}
-        onChange={(e) => setTopic(e.target.value)}
-        style={{ width: "100%", margin: "0.5rem 0" }}
-      />
-      <input
-        type="text"
-        placeholder="Custom Session Code"
-        value={sessionCode}
-        onChange={(e) => setSessionCode(e.target.value)}
-        style={{ width: "100%", margin: "0.5rem 0" }}
-      />
-      <input
-        type="number"
-        placeholder="Duration (minutes)"
-        value={duration}
-        onChange={(e) => setDuration(e.target.value)}
-        style={{ width: "100%", margin: "0.5rem 0" }}
-      />
-      <div style={{ margin: "0.5rem 0" }}>
-        <label>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-3xl font-bold text-teal-400 text-center mb-6">
+          Create New Session
+        </h2>
+        <input
+          type="text"
+          placeholder="Discussion Topic"
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+        />
+        <input
+          type="text"
+          placeholder="Custom Session Code"
+          value={sessionCode}
+          onChange={(e) => setSessionCode(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+        />
+        <input
+          type="number"
+          placeholder="Duration (minutes)"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+        />
+        <div className="flex items-center mb-4">
           <input
             type="checkbox"
             checked={isPublic}
             onChange={(e) => setIsPublic(e.target.checked)}
+            className="w-4 h-4 text-teal-400 bg-gray-700 border-gray-600 focus:ring-teal-400 focus:ring-2"
           />
-          &nbsp;Make Session Public
-        </label>
+          <label className="ml-2 text-gray-300">Make Session Public</label>
+        </div>
+        <button
+          onClick={handleCreate}
+          className="w-full p-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer "
+        >
+          Create Session
+        </button>
       </div>
-      <button
-        onClick={handleCreate}
-        style={{ width: "100%", padding: "0.5rem" }}
-      >
-        Create Session
-      </button>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/components/FeedbackForm.jsx
 import { useState } from "react";
 import axios from "axios";
 
@@ -41,19 +40,22 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
   const renderRadioGroup = (label, selectedValue, setValue) => {
     const options = Array.from({ length: 11 }, (_, i) => i);
     return (
-      <div style={{ margin: "0.5rem 0" }}>
-        <div>{label}:</div>
-        <div style={{ display: "flex", flexWrap: "wrap" }}>
+      <div className="mb-4">
+        <label className="block text-gray-300 font-semibold mb-2">
+          {label}:
+        </label>
+        <div className="flex flex-wrap gap-2">
           {options.map((option) => (
-            <label key={option} style={{ marginRight: "1rem" }}>
+            <label key={option} className="flex items-center space-x-2">
               <input
                 type="radio"
                 name={label}
                 value={option}
                 checked={selectedValue === option}
                 onChange={() => setValue(option)}
+                className="w-4 h-4 text-teal-400 bg-gray-700 border-gray-600 focus:ring-teal-400 focus:ring-2"
               />
-              {option}
+              <span className="text-gray-300">{option}</span>
             </label>
           ))}
         </div>
@@ -62,16 +64,16 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
   };
 
   return (
-    <div
-      style={{ marginTop: "2rem", padding: "1rem", border: "1px solid #aaa" }}
-    >
-      <h3>Submit Feedback</h3>
-      <div style={{ margin: "0.5rem 0" }}>
-        <label>Select Participant: </label>
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white max-w-2xl mx-auto mt-8">
+      <h3 className="text-2xl font-bold text-teal-400 mb-6">Submit Feedback</h3>
+      <div className="mb-4">
+        <label className="block text-gray-300 font-semibold mb-2">
+          Select Participant:
+        </label>
         <select
           value={participantId}
           onChange={(e) => setParticipantId(e.target.value)}
-          style={{ width: "100%", marginTop: "0.5rem", padding: "0.5rem" }}
+          className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
         >
           <option value="">-- Select Participant --</option>
           {participants.map((participant) => (
@@ -88,11 +90,11 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
         placeholder="Comments"
         value={comments}
         onChange={(e) => setComments(e.target.value)}
-        style={{ width: "100%", margin: "0.5rem 0", padding: "0.5rem" }}
+        className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 mb-4"
       />
       <button
         onClick={handleSubmit}
-        style={{ padding: "0.5rem", width: "100%" }}
+        className="w-full p-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300"
       >
         Submit Feedback
       </button>

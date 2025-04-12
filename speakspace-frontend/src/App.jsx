@@ -11,13 +11,15 @@ import PublicSessions from "./pages/PublicSessions";
 import LiveSession from "./pages/LiveSession";
 import TimeUp from "./pages/TimeUp";
 import Analytics from "./pages/Analytics";
+import Hero from "./components/Hero";
 
 function App() {
   return (
     <>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Hero />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<CreateSession />} />

@@ -1,4 +1,3 @@
-// src/pages/JoinSession.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -34,18 +33,33 @@ const JoinSession = () => {
     }
   };
 
-  if (error) return <div style={{ textAlign: "center" }}>{error}</div>;
+  if (error)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 text-lg">
+        {error}
+      </div>
+    );
+
   if (!session)
     return (
-      <div style={{ textAlign: "center" }}>Loading session details...</div>
+      <div className="min-h-screen flex items-center justify-center text-gray-300 text-lg">
+        Loading session details...
+      </div>
     );
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Join Session: {session.topic}</h2>
-      <button onClick={join} style={{ padding: "0.5rem", marginTop: "1rem" }}>
-        Join Now
-      </button>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex flex-col items-center justify-center px-6">
+      <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md text-center">
+        <h2 className="text-3xl font-bold text-teal-400 mb-6">
+          Join Session: {session.topic}
+        </h2>
+        <button
+          onClick={join}
+          className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 cursor-pointer"
+        >
+          Join Now
+        </button>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/pages/LiveSession.jsx
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -16,7 +15,7 @@ const LiveSession = () => {
   const joinedRef = useRef(false);
   const timerRef = useRef(null);
 
-  // Fetch session details (with populated participants)
+  // Fetch session details
   useEffect(() => {
     const fetchSession = async () => {
       try {
@@ -29,7 +28,7 @@ const LiveSession = () => {
     fetchSession();
   }, [id]);
 
-  // When session details are available, join the socket room only once
+  // Join socket room
   useEffect(() => {
     if (!joinedRef.current && session) {
       socket.emit("joinRoom", { sessionId: id, user });
@@ -48,34 +47,9 @@ const LiveSession = () => {
     };
   }, []);
 
-  // Listen for new participant event to update session participants live
-  useEffect(() => {
-    const handleParticipantJoined = (newParticipant) => {
-      setSession((prevSession) => {
-        if (!prevSession) return prevSession;
-        // Check if the participant already exists (by _id)
-        const exists = prevSession.participants.some(
-          (p) => p._id === newParticipant._id
-        );
-        if (!exists) {
-          return {
-            ...prevSession,
-            participants: [...prevSession.participants, newParticipant],
-          };
-        }
-        return prevSession;
-      });
-    };
-    socket.on("participantJoined", handleParticipantJoined);
-    return () => {
-      socket.off("participantJoined", handleParticipantJoined);
-    };
-  }, []);
-
-  // Listen for sessionStarted and timeUp events
+  // Listen for session events
   useEffect(() => {
     socket.on("sessionStarted", (data) => {
-      // Update session state with startTime and duration
       setSession((prev) => ({
         ...prev,
         started: true,
@@ -92,7 +66,7 @@ const LiveSession = () => {
     };
   }, [navigate]);
 
-  // Start countdown timer when session is started
+  // Countdown timer
   useEffect(() => {
     if (session && session.started && session.startTime && session.duration) {
       const start = new Date(session.startTime).getTime();
@@ -108,7 +82,7 @@ const LiveSession = () => {
     return () => clearInterval(timerRef.current);
   }, [session]);
 
-  // Send message with role appended (if evaluator or moderator)
+  // Send message
   const sendMessage = () => {
     if (message.trim() === "") return;
     const senderName =
@@ -123,7 +97,7 @@ const LiveSession = () => {
     setMessage("");
   };
 
-  // For moderator: allow starting session if not yet started
+  // Start session
   const startSession = async () => {
     try {
       const res = await axios.post(
@@ -136,12 +110,14 @@ const LiveSession = () => {
   };
 
   return (
-    <div style={{ padding: "1rem" }}>
-      <h2>Live Session: {session ? session.topic : id}</h2>
+    <div className=" pt-20 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center px-6 py-4">
+      <h2 className="text-3xl font-bold text-teal-400 mb-6">
+        Live Session: {session ? session.topic : id}
+      </h2>
 
       {/* Countdown Timer */}
       {session && session.started && countdown !== null && (
-        <div style={{ fontSize: "1.5rem", margin: "1rem 0" }}>
+        <div className="text-xl font-semibold text-gray-300 mb-4">
           Time Remaining: {Math.floor(countdown / 60)}:
           {("0" + (countdown % 60)).slice(-2)}
         </div>
@@ -151,44 +127,40 @@ const LiveSession = () => {
       {user.role === "moderator" && session && !session.started && (
         <button
           onClick={startSession}
-          style={{ padding: "0.5rem", margin: "1rem 0" }}
+          className="px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300 mb-4 cursor-pointer"
         >
           Start Session
         </button>
       )}
 
       {/* Chat Area */}
-      <div
-        style={{
-          border: "1px solid #ccc",
-          height: "250px",
-          padding: "1rem",
-          overflowY: "scroll",
-        }}
-      >
-        {messages.map((m, i) => (
-          <div key={i}>
-            <strong>{m.sender}</strong>: {m.text}
-          </div>
-        ))}
-      </div>
-      <div style={{ marginTop: "1rem" }}>
-        <input
-          type="text"
-          placeholder="Type a message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          style={{ width: "80%", padding: "0.5rem" }}
-        />
-        <button
-          onClick={sendMessage}
-          style={{ padding: "0.5rem", marginLeft: "0.5rem" }}
-        >
-          Send
-        </button>
+      <div className="w-full max-w-3xl bg-gray-800 p-4 rounded-lg shadow-lg mb-4">
+        <div className="h-64 overflow-y-scroll border border-gray-700 p-3 rounded-lg no-scrollbar ">
+          {messages.map((m, i) => (
+            <div key={i} className="mb-2">
+              <strong className="text-teal-400">{m.sender}</strong>:{" "}
+              <span className="text-gray-300">{m.text}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex mt-4">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="flex-grow p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+          />
+          <button
+            onClick={sendMessage}
+            className="ml-4 px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300"
+          >
+            Send
+          </button>
+        </div>
       </div>
 
-      {/* For evaluators: render FeedbackForm; pass only participants with role 'participant' */}
+      {/* Feedback Form for Evaluators */}
       {user.role === "evaluator" && session && (
         <FeedbackForm
           sessionId={id}
