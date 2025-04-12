@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const FeedbackForm = ({ sessionId, participants = [] }) => {
-  const [participantId, setParticipantId] = useState("");
+  const [participantName, setParticipantName] = useState("");
   const [communication, setCommunication] = useState(0);
   const [clarity, setClarity] = useState(0);
   const [teamwork, setTeamwork] = useState(0);
@@ -10,14 +10,21 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
 
   const handleSubmit = async () => {
     const evaluator = JSON.parse(localStorage.getItem("user"));
-    if (!participantId) {
-      alert("Please select a participant.");
+
+    // Find participant by name
+    const participant = participants.find(
+      (p) => p.name.toLowerCase() === participantName.toLowerCase()
+    );
+
+    if (!participant) {
+      alert("Participant not found. Please enter a valid name.");
       return;
     }
+
     try {
       await axios.post("http://localhost:5000/api/feedback/submit", {
         sessionId,
-        participantId,
+        participantId: participant._id,
         evaluatorId: evaluator._id,
         communication,
         clarity,
@@ -25,7 +32,7 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
         comments,
       });
       alert("Feedback submitted!");
-      setParticipantId("");
+      setParticipantName("");
       setComments("");
       setCommunication(0);
       setClarity(0);
@@ -68,20 +75,15 @@ const FeedbackForm = ({ sessionId, participants = [] }) => {
       <h3 className="text-2xl font-bold text-teal-400 mb-6">Submit Feedback</h3>
       <div className="mb-4">
         <label className="block text-gray-300 font-semibold mb-2">
-          Select Participant:
+          Enter Participant Name:
         </label>
-        <select
-          value={participantId}
-          onChange={(e) => setParticipantId(e.target.value)}
+        <input
+          type="text"
+          placeholder="Type participant's name"
+          value={participantName}
+          onChange={(e) => setParticipantName(e.target.value)}
           className="w-full p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
-        >
-          <option value="">-- Select Participant --</option>
-          {participants.map((participant) => (
-            <option key={participant._id} value={participant._id}>
-              {participant.name}
-            </option>
-          ))}
-        </select>
+        />
       </div>
       {renderRadioGroup("Communication", communication, setCommunication)}
       {renderRadioGroup("Clarity", clarity, setClarity)}
