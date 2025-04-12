@@ -124,6 +124,28 @@ const getMySessions = async (req, res) => {
   }
 };
 
+const leaveSession = async (req, res) => {
+  const { id } = req.params; // Session ID
+  const { userId } = req.body; // User ID
+  try {
+    const session = await Session.findById(id);
+    if (!session) return res.status(404).json({ error: "Session not found" });
+
+    // Remove the user from the participants list
+    session.participants = session.participants.filter(
+      (participant) => participant.toString() !== userId
+    );
+    await session.save();
+
+    // Notify other participants via Socket.IO
+    global.io.to(id).emit("participantLeft", { userId });
+
+    res.json({ message: "Left session successfully" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to leave session" });
+  }
+};
+
 module.exports = {
   createSession,
   joinSession,
@@ -132,4 +154,5 @@ module.exports = {
   startSession,
   getPublicSessions,
   getMySessions,
+  leaveSession,
 };

@@ -8,7 +8,8 @@ const {
   joinSessionByCode,
   startSession,
   getPublicSessions,
-  getMySessions, // imported new function
+  getMySessions,
+  leaveSession, // imported new function
 } = require("../controllers/sessionController");
 
 router.post("/create", createSession);
@@ -18,5 +19,6 @@ router.get("/public", getPublicSessions);
 router.get("/mySessions", getMySessions); // New endpoint for moderator sessions
 router.get("/:id", getSessionById);
 router.post("/start/:id", startSession);
+router.post("/leave/:id", leaveSession);
 
 module.exports = router;

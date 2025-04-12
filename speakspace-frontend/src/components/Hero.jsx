@@ -11,6 +11,14 @@ const Hero = () => {
     if (user) {
       navigate("/dashboard");
     } else {
+      navigate("/register");
+    }
+  };
+
+  const handleExplore = () => {
+    if (user) {
+      navigate("/publicSessions");
+    } else {
       navigate("/login");
     }
   };
@@ -67,7 +75,7 @@ const Hero = () => {
           Get Started
         </button>
         <button
-          onClick={() => navigate("/publicSessions")}
+          onClick={handleExplore}
           className="px-6 py-3 bg-transparent border border-teal-400 text-teal-400 font-bold rounded-lg hover:bg-teal-400 hover:text-gray-900 transition duration-300 cursor-pointer "
         >
           Explore Public Sessions

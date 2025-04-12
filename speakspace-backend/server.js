@@ -33,12 +33,10 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ sessionId, user }) => {
     socket.join(sessionId);
     // Send system message to other clients in the room (except the joining socket)
-    socket
-      .to(sessionId)
-      .emit("newMessage", {
-        sender: "System",
-        text: `${user.name} joined the session`,
-      });
+    socket.to(sessionId).emit("newMessage", {
+      sender: "System",
+      text: `${user.name} joined the session`,
+    });
 
     // If the joining user is a participant, broadcast a participantJoined event
     if (user.role === "participant") {
@@ -52,6 +50,14 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Socket disconnected:", socket.id);
+  });
+
+  socket.on("leaveRoom", ({ sessionId, user }) => {
+    socket.leave(sessionId);
+    io.to(sessionId).emit("newMessage", {
+      sender: "System",
+      text: `${user.name} left the session`,
+    });
   });
 });
 

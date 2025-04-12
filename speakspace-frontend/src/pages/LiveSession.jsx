@@ -109,8 +109,35 @@ const LiveSession = () => {
     }
   };
 
+  // // Leave session
+  // const leaveSession = async () => {
+  //   try {
+  //     const user = JSON.parse(localStorage.getItem("user"));
+  //     await axios.post(`http://localhost:5000/api/sessions/leave/${id}`, {
+  //       userId: user._id,
+  //     });
+  //     socket.emit("leaveRoom", { sessionId: id, user });
+  //     navigate("/dashboard");
+  //   } catch (err) {
+  //     console.error("Failed to leave session", err);
+  //   }
+  // };
+
+  const leaveSession = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      await axios.post(`http://localhost:5000/api/sessions/leave/${id}`, {
+        userId: user._id,
+      });
+      socket.emit("leaveRoom", { sessionId: id, user });
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Failed to leave session", err);
+    }
+  };
+
   return (
-    <div className=" pt-20 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center px-6 py-4">
+    <div className="pt-20 min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white flex flex-col items-center px-6 py-4">
       <h2 className="text-3xl font-bold text-teal-400 mb-6">
         Live Session: {session ? session.topic : id}
       </h2>
@@ -135,7 +162,7 @@ const LiveSession = () => {
 
       {/* Chat Area */}
       <div className="w-full max-w-3xl bg-gray-800 p-4 rounded-lg shadow-lg mb-4">
-        <div className="h-64 overflow-y-scroll border border-gray-700 p-3 rounded-lg no-scrollbar ">
+        <div className="h-64 overflow-y-scroll border border-gray-700 p-3 rounded-lg">
           {messages.map((m, i) => (
             <div key={i} className="mb-2">
               <strong className="text-teal-400">{m.sender}</strong>:{" "}
@@ -144,21 +171,39 @@ const LiveSession = () => {
           ))}
         </div>
         <div className="flex mt-4">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="flex-grow p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
-          />
-          <button
-            onClick={sendMessage}
-            className="ml-4 px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300"
-          >
-            Send
-          </button>
+          {!session?.started && user.role === "participant" ? (
+            <div className="text-gray-400 italic">
+              Waiting for the moderator to start the session...
+            </div>
+          ) : (
+            <>
+              <input
+                type="text"
+                placeholder="Type a message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-grow p-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
+                // disabled={!session?.started}
+              />
+              <button
+                onClick={sendMessage}
+                className="ml-4 px-6 py-3 bg-teal-400 text-gray-900 font-bold rounded-lg hover:bg-teal-500 transition duration-300"
+                // disabled={!session?.started}
+              >
+                Send
+              </button>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Leave Session Button */}
+      <button
+        onClick={leaveSession}
+        className="px-6 py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300"
+      >
+        Leave Session
+      </button>
 
       {/* Feedback Form for Evaluators */}
       {user.role === "evaluator" && session && (
