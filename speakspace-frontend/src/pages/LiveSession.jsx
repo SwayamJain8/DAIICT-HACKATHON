@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import socket from "../socket";
 import FeedbackForm from "../components/FeedbackForm";
+import AIAssistant from "../components/AIAssistant";
 
 const LiveSession = () => {
   const { id } = useParams();
@@ -253,7 +254,7 @@ const LiveSession = () => {
               </div>
             </div>
 
-            <div className="h-[400px] overflow-y-auto bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 mb-4">
+            <div className="h-[400px] overflow-y-auto bg-gray-900/50 p-4 rounded-lg border border-gray-700/50 mb-4 no-scrollbar">
               {messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <p className="text-gray-500 text-center">
@@ -335,6 +336,16 @@ const LiveSession = () => {
                 </>
               )}
             </div>
+
+            {messages.length > 0 && (
+              <AIAssistant
+                messages={messages}
+                onAnalysisComplete={(analysis) => {
+                  // Optionally handle the analysis results
+                  console.log("AI Analysis:", analysis);
+                }}
+              />
+            )}
           </div>
 
           {/* Sidebar */}

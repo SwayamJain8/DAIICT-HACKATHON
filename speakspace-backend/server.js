@@ -17,6 +17,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/sessions", require("./routes/sessionRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutes"));
+app.use("/api/ai", require("./routes/aiRoutes"));
 
 // Create HTTP server and integrate Socket.IO
 const server = http.createServer(app);
