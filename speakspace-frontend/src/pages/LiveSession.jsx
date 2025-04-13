@@ -4,6 +4,7 @@ import axios from "axios";
 import socket from "../socket";
 import FeedbackForm from "../components/FeedbackForm";
 import AIAssistant from "../components/AIAssistant";
+import { JitsiMeeting } from '@jitsi/react-sdk';
 
 const LiveSession = () => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ const LiveSession = () => {
   const [countdown, setCountdown] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isVideoCallActive, setIsVideoCallActive] = useState(false);
   const joinedRef = useRef(false);
   const timerRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -34,7 +36,10 @@ const LiveSession = () => {
       try {
         setIsLoading(true);
         const res = await axios.get(`http://localhost:5000/api/sessions/${id}`);
-        setSession(res.data);
+        setSession({
+          ...res.data,
+          videoCallStarted: false
+        });
         setIsLoading(false);
       } catch (err) {
         console.error(err);
@@ -98,6 +103,62 @@ const LiveSession = () => {
     }
     return () => clearInterval(timerRef.current);
   }, [session]);
+
+  // Start video call
+  const startVideoCall = () => {
+    setIsVideoCallActive(true);
+    setSession(prev => ({
+      ...prev,
+      videoCallStarted: true
+    }));
+    socket.emit("videoCallStarted", { sessionId: id, user });
+  };
+
+  // Join video call
+  const joinVideoCall = () => {
+    setIsVideoCallActive(true);
+  };
+
+  // End video call for everyone (moderator only)
+  const endVideoCallForAll = () => {
+    setIsVideoCallActive(false);
+    setSession(prev => ({
+      ...prev,
+      videoCallStarted: false
+    }));
+    socket.emit("videoCallEnded", { sessionId: id, user });
+  };
+
+  // Leave video call (for participants)
+  const leaveVideoCall = () => {
+    setIsVideoCallActive(false);
+  };
+
+  // Listen for video call events
+  useEffect(() => {
+    socket.on("videoCallStarted", ({ user: starterUser }) => {
+      if (user._id !== starterUser._id) {
+        setSession(prev => ({
+          ...prev,
+          videoCallStarted: true
+        }));
+      }
+    });
+
+    socket.on("videoCallEnded", () => {
+      // Only end call for everyone if moderator ends it
+      setSession(prev => ({
+        ...prev,
+        videoCallStarted: false
+      }));
+      setIsVideoCallActive(false);
+    });
+
+    return () => {
+      socket.off("videoCallStarted");
+      socket.off("videoCallEnded");
+    };
+  }, [user._id]);
 
   // Send message
   const sendMessage = () => {
@@ -244,6 +305,50 @@ const LiveSession = () => {
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Video Call Area */}
+          {isVideoCallActive && (
+            <div className="lg:col-span-3 bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-gray-700/50 mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold text-gray-200">Video Call</h3>
+                <button
+                  onClick={user.role === "moderator" ? endVideoCallForAll : leaveVideoCall}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
+                >
+                  {user.role === "moderator" ? "End Call" : "Leave Call"}
+                </button>
+              </div>
+              <div className="w-full h-[500px]">
+                <JitsiMeeting
+                  domain="meet.jit.si"
+                  roomName={`speakspace-${id}`}
+                  containerStyle={{ width: '100%', height: '100%' }}
+                  configOverwrite={{
+                    startWithAudioMuted: true,
+                    startWithVideoMuted: true,
+                    prejoinPageEnabled: false,
+                    disableModeratorIndicator: true,
+                  }}
+                  getIFrameRef={(node) => {
+                    if (node) {
+                      node.style.height = '100%';
+                      node.style.width = '100%';
+                      node.style.border = 'none';
+                    }
+                  }}
+                  interfaceConfigOverwrite={{
+                    TOOLBAR_BUTTONS: [
+                      'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+                      'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+                      'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+                      'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
+                      'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone'
+                    ],
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Chat Area */}
           <div className="lg:col-span-2 bg-gray-800/50 backdrop-blur-sm p-6 rounded-xl shadow-2xl border border-gray-700/50">
             <div className="flex items-center justify-between mb-4">
@@ -383,9 +488,59 @@ const LiveSession = () => {
                     </button>
                   )}
 
+                {/* Video Call Controls */}
+                {session?.started && (
+                  <div className="space-y-4">
+                    {user.role === "moderator" && !isVideoCallActive && (
+                      <button
+                        onClick={startVideoCall}
+                        className="w-full p-3 bg-gradient-to-r from-blue-400 to-indigo-300 text-gray-900 font-bold rounded-lg hover:from-blue-500 hover:to-indigo-400 transition duration-300 shadow-lg flex items-center justify-center"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Start Video Call
+                      </button>
+                    )}
+                    {(user.role === "participant" || user.role === "evaluator") && !isVideoCallActive && session.videoCallStarted && (
+                      <button
+                        onClick={joinVideoCall}
+                        className="w-full p-3 bg-gradient-to-r from-blue-400 to-indigo-300 text-gray-900 font-bold rounded-lg hover:from-blue-500 hover:to-indigo-400 transition duration-300 shadow-lg flex items-center justify-center"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-2"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Join Video Call
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <button
                   onClick={leaveSession}
-                  className="w-full p-3 bg-red-500/20 text-red-400 font-medium rounded-lg hover:bg-red-500/30 transition duration-300 border border-red-500/50 flex items-center justify-center"
+                  className="w-full p-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 transition duration-300 shadow-lg flex items-center justify-center mt-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

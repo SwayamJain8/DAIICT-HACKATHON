@@ -49,6 +49,26 @@ io.on("connection", (socket) => {
     io.to(sessionId).emit("newMessage", { sender, text });
   });
 
+  socket.on("videoCallStarted", ({ sessionId, user }) => {
+    // Broadcast to all users in the session that a video call has started
+    io.to(sessionId).emit("videoCallStarted", { user });
+    // Send system message about video call
+    io.to(sessionId).emit("newMessage", {
+      sender: "System",
+      text: `${user.name} started a video call`,
+    });
+  });
+
+  socket.on("videoCallEnded", ({ sessionId, user }) => {
+    // Broadcast to all users in the session that the video call has ended
+    io.to(sessionId).emit("videoCallEnded");
+    // Send system message about video call ending
+    io.to(sessionId).emit("newMessage", {
+      sender: "System",
+      text: `${user.name} ended the video call`,
+    });
+  });
+
   socket.on("disconnect", () => {
     console.log("Socket disconnected:", socket.id);
   });
