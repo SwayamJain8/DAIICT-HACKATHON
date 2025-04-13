@@ -1,68 +1,139 @@
-# 🗣️ SpeakSpace - Enhance Your Communication Skills 🚀
+# 🎤 SpeakSpace - Real-Time Communication Platform
 
-Welcome to **SpeakSpace**, the ultimate platform to improve your **Group Discussion** and **Interview Skills**! Collaborate, practice, and grow with real-time feedback, analytics, and AI-powered insights.
+![SpeakSpace Logo](public/logo.png)
 
----
+## 📝 Overview
 
-## 🌟 Features
+SpeakSpace is a modern, real-time communication platform that enables seamless video conferencing, chat, and collaboration. Built with cutting-edge technologies, it provides a robust solution for virtual meetings, presentations, and interactive sessions.
 
-### 🎯 Core Functionalities
+## ✨ Features
 
-- **Real-Time Sessions**: Join or create live group discussions and interviews.
-- **Expert Feedback**: Receive constructive feedback on communication, clarity, and teamwork.
-- **AI-Powered Insights**: Analyze conversations for sentiment, engagement, and areas of improvement.
-- **Analytics Dashboard**: Track your progress with detailed feedback trends and performance metrics.
+- 🎥 **Real-time Video Conferencing**
+  - High-quality video and audio streaming
+  - Screen sharing capabilities
+  - Multiple participant support
+  - Room-based video sessions
 
-### 🛠️ Tech Stack
+- 💬 **Interactive Chat**
+  - Real-time messaging
+  - System notifications
+  - User presence indicators
+  - Message history
 
-- **Frontend**: React, TailwindCSS, Vite
-- **Backend**: Node.js, Express.js, MongoDB
-- **Real-Time Communication**: Socket.IO
-- **Video Conferencing**: Jitsi Meet Integration
-- **AI Integration**: Custom AI models for conversation analysis
+- 👥 **User Management**
+  - Role-based access control (Host/Participant)
+  - User authentication
+  - Profile management
+  - Session management
 
----
+- 🤖 **AI Integration**
+  - AI-powered features
+  - Smart session analytics
+  - Automated feedback system
 
-## 📂 Project Structure
+## 🛠️ Technology Stack
 
 ### Frontend
-
-- **Path**: `speakspace-frontend`
-- **Key Components**:
-  - `Hero.jsx`: Landing page with animations and call-to-action.
-  - `Dashboard.jsx`: User-specific dashboard with quick actions.
-  - `LiveSession.jsx`: Real-time session interface with chat, video, and AI assistant.
-  - `Analytics.jsx`: Feedback trends and performance analytics.
-  - `FeedbackForm.jsx`: Submit detailed feedback for participants.
+- React.js
+- Material-UI
+- TailwindCSS
+- Socket.io-client
+- Jitsi Meet SDK
+- Firebase
+- Vite
 
 ### Backend
-
-- **Path**: `speakspace-backend`
-- **Key Features**:
-  - **Routes**:
-    - `authRoutes.js`: Authentication (login, register).
-    - `sessionRoutes.js`: Manage sessions (create, join).
-    - `feedbackRoutes.js`: Submit and fetch feedback.
-    - `aiRoutes.js`: AI-powered conversation analysis.
-  - **Models**:
-    - `User.js`: User schema (participant, moderator, evaluator).
-    - `Session.js`: Session schema with participants and status.
-    - `Feedback.js`: Feedback schema for evaluations.
-
----
+- Node.js
+- Express.js
+- Socket.io
+- MongoDB
+- JWT Authentication
+- Environment Variables
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js (v16+)
+- Node.js (v14 or higher)
+- npm or yarn
 - MongoDB
-- Yarn or npm
 
-### Setup Instructions
+### Installation
 
-1. **Clone the Repository**:
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-repo/speakspace.git
+   git clone https://github.com/yourusername/speakspace.git
    cd speakspace
    ```
+
+2. **Frontend Setup**
+   ```bash
+   cd speakspace-frontend
+   npm install
+   npm run dev
+   ```
+
+3. **Backend Setup**
+   ```bash
+   cd speakspace-backend
+   npm install
+   # Create .env file with required environment variables
+   npm start
+   ```
+
+### Environment Variables
+
+Create a `.env` file in the backend directory with the following variables:
+```
+PORT=5000
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+```
+
+## 📱 Usage
+
+1. **Creating a Session**
+   - Log in to your account
+   - Click "Create New Session"
+   - Set session parameters
+   - Share the session link with participants
+
+2. **Joining a Session**
+   - Click the session link
+   - Enter your name
+   - Choose your role (Host/Participant)
+   - Join the session
+
+3. **During the Session**
+   - Use video controls for camera/mic
+   - Chat with participants
+   - Share your screen
+   - Use AI-powered features
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+- [Team Member 1] - Frontend Developer
+- [Team Member 2] - Backend Developer
+- [Team Member 3] - UI/UX Designer
+- [Team Member 4] - AI Integration Specialist
+
+## 📞 Support
+
+For support, email support@speakspace.com or join our Slack channel.
+
+---
+
+Made with ❤️ by the SpeakSpace Team
