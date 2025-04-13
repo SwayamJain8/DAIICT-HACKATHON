@@ -12,7 +12,6 @@ import LiveSession from "./pages/LiveSession";
 import TimeUp from "./pages/TimeUp";
 import Analytics from "./pages/Analytics";
 import Hero from "./components/Hero";
-import JitsiMeet from "./components/JitsiMeet";
 
 function App() {
   return (
