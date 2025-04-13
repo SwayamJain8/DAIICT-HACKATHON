@@ -73,15 +73,25 @@ const getSessionById = async (req, res) => {
 // Also schedule deletion once time is up.
 const startSession = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.body; // Assuming userId is passed in the request body
+
   try {
     const session = await Session.findById(id);
     if (!session) return res.status(404).json({ error: "Session not found" });
+
+    // Ensure the logged-in user is the creator of the session
+    if (session.createdBy.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to start this session" });
+    }
+
     session.started = true;
     session.startTime = new Date();
     session.status = "active";
     await session.save();
 
-    // Emit to all sockets in this session room that session has started.
+    // Emit to all sockets in this session room that session has started
     global.io.to(id).emit("sessionStarted", {
       startTime: session.startTime,
       duration: session.duration,
@@ -89,9 +99,7 @@ const startSession = async (req, res) => {
 
     // Schedule deletion/end of session after duration (in ms)
     setTimeout(async () => {
-      // Emit timeUp event to clients
       global.io.to(id).emit("timeUp", { message: "Time is up!" });
-      // Optionally, delete the session or mark it as ended.
       await Session.findByIdAndDelete(id);
     }, session.duration * 60 * 1000);
 
@@ -127,9 +135,20 @@ const getMySessions = async (req, res) => {
 const leaveSession = async (req, res) => {
   const { id } = req.params; // Session ID
   const { userId } = req.body; // User ID
+
   try {
     const session = await Session.findById(id);
     if (!session) return res.status(404).json({ error: "Session not found" });
+
+    // Ensure the user is either a participant or the creator of the session
+    if (
+      !session.participants.includes(userId) &&
+      session.createdBy.toString() !== userId
+    ) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to leave this session" });
+    }
 
     // Remove the user from the participants list
     session.participants = session.participants.filter(

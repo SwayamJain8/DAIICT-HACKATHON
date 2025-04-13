@@ -1,4 +1,54 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #646cff;
+  --primary-dark: #535bf2;
+  --secondary: #61dafb;
+  --background: #ffffff;
+  --text: #213547;
+  --text-light: #888888;
+  --success: #4CAF50;
+  --error: #f44336;
+  --warning: #ff9800;
+  --border-radius: 8px;
+  --transition: all 0.3s ease;
+}
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 min-h-screen;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 
+           hover:shadow-md active:scale-95;
+  }
+  
+  .btn-primary {
+    @apply bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)];
+  }
+  
+  .btn-secondary {
+    @apply bg-[var(--secondary)] text-gray-900 hover:bg-opacity-90;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow 
+           duration-200 p-6;
+  }
+  
+  .input {
+    @apply w-full px-4 py-2 rounded-lg border border-gray-200 
+           focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)] 
+           focus:ring-opacity-20 outline-none transition-all duration-200;
+  }
+}
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -6,5 +56,84 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  .glass-effect {
+    @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20;
+  }
+  
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary)] to-[var(--secondary)];
+  }
+  
+  /* 3D Cube Animation Styles */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+  
+  .translate-z-5 {
+    transform: translateZ(5px);
+  }
+  
+  .translate-x-5 {
+    transform: translateX(5px);
+  }
+  
+  .translate-y-5 {
+    transform: translateY(5px);
+  }
+  
+  .rotate-y-90 {
+    transform: rotateY(90deg);
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  
+  .rotate-y-270 {
+    transform: rotateY(270deg);
+  }
+  
+  .rotate-x-90 {
+    transform: rotateX(90deg);
+  }
+  
+  .rotate-x-90 {
+    transform: rotateX(90deg);
+  }
+  
+  @keyframes spin-slow {
+    0% {
+      transform: rotateX(0deg) rotateY(0deg);
+    }
+    100% {
+      transform: rotateX(360deg) rotateY(360deg);
+    }
+  }
+  
+  .animate-spin-slow {
+    animation: spin-slow 8s linear infinite;
+  }
+  
+  /* Floating Animation */
+  @keyframes float {
+    0% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-20px) rotate(5deg);
+    }
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }

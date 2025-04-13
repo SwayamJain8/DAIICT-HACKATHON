@@ -40,7 +40,7 @@ export default function SimpleLineChart() {
   }, []);
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg flex justify-center items-center">
+    <div className="bg-teal-600 p-6 rounded-lg shadow-lg flex justify-center items-center">
       <LineChart
         className="rounded-lg"
         width={800}
