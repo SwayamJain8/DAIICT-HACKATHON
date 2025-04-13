@@ -192,7 +192,7 @@ const LiveSession = () => {
   }
 
   return (
-    <div className="min-h-screen pt-30 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white p-6 pt-20 relative overflow-hidden">
+    <div className="min-h-screen pt-[130px] bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white p-6 relative overflow-hidden">
       {/* 3D Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl animate-pulse"></div>

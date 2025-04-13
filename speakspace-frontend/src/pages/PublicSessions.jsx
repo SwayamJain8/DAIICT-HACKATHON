@@ -26,9 +26,10 @@ const PublicSessions = () => {
     fetchPublicSessions();
   }, []);
 
-  const filteredSessions = sessions.filter(session => 
-    session.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    session.sessionCode.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSessions = sessions.filter(
+    (session) =>
+      session.topic.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      session.sessionCode.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -44,11 +45,22 @@ const PublicSessions = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen pt-30 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center p-6">
+      <div className="min-h-screen pt-[130px] bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 flex items-center justify-center p-6">
         <div className="bg-gray-800/50 backdrop-blur-sm p-8 rounded-xl shadow-2xl border border-red-500/50 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 text-red-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-red-400 mb-4">Error</h2>
@@ -65,15 +77,21 @@ const PublicSessions = () => {
   }
 
   return (
-    <div className="min-h-screen pt-30 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white p-6 pt-20 relative overflow-hidden">
+    <div className="min-h-screen pt-[130px] bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-white p-6 relative overflow-hidden">
       {/* 3D Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-64 h-64 bg-teal-500/10 rounded-full filter blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-500/10 rounded-full filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-        
+        <div
+          className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-500/10 rounded-full filter blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        ></div>
+
         {/* Floating 3D Elements */}
         <div className="absolute top-1/4 left-1/4 w-16 h-16 bg-teal-400/20 rounded-lg transform rotate-45 animate-float"></div>
-        <div className="absolute top-3/4 right-1/4 w-20 h-20 bg-cyan-400/20 rounded-full animate-float" style={{ animationDelay: '1s' }}></div>
+        <div
+          className="absolute top-3/4 right-1/4 w-20 h-20 bg-cyan-400/20 rounded-full animate-float"
+          style={{ animationDelay: "1s" }}
+        ></div>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
@@ -98,22 +116,46 @@ const PublicSessions = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full md:w-64 p-3 pl-10 bg-gray-700/50 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 border border-gray-600/50 transition-all duration-300"
                 />
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-gray-400 absolute left-3 top-3.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
             </div>
           </div>
-          
+
           {filteredSessions.length === 0 ? (
             <div className="bg-gray-700/30 p-8 rounded-lg text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-16 w-16 text-gray-500 mx-auto mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
-              <h3 className="text-xl font-bold text-gray-300 mb-2">No Sessions Found</h3>
+              <h3 className="text-xl font-bold text-gray-300 mb-2">
+                No Sessions Found
+              </h3>
               <p className="text-gray-400 mb-4">
-                {searchTerm 
-                  ? "No sessions match your search criteria. Try a different search term." 
+                {searchTerm
+                  ? "No sessions match your search criteria. Try a different search term."
                   : "There are no public sessions available at the moment."}
               </p>
               <button
@@ -132,33 +174,78 @@ const PublicSessions = () => {
                   onClick={() => navigate(`/join/${session._id}`)}
                 >
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-lg font-bold text-teal-400">{session.topic}</h3>
+                    <h3 className="text-lg font-bold text-teal-400">
+                      {session.topic}
+                    </h3>
                     <span className="px-2 py-1 bg-teal-400/20 text-teal-400 text-xs rounded-full">
                       {session.status || "Active"}
                     </span>
                   </div>
-                  
+
                   <div className="space-y-3 mb-4">
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-gray-400 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                        />
                       </svg>
-                      <span className="text-gray-300">Code: <span className="font-medium">{session.sessionCode}</span></span>
+                      <span className="text-gray-300">
+                        Code:{" "}
+                        <span className="font-medium">
+                          {session.sessionCode}
+                        </span>
+                      </span>
                     </div>
-                    
+
                     <div className="flex items-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-gray-400 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
-                      <span className="text-gray-300">Duration: <span className="font-medium">{session.duration} minutes</span></span>
+                      <span className="text-gray-300">
+                        Duration:{" "}
+                        <span className="font-medium">
+                          {session.duration} minutes
+                        </span>
+                      </span>
                     </div>
                   </div>
-                  
+
                   <div className="flex justify-end">
                     <button className="px-4 py-2 bg-gradient-to-r from-teal-400 to-cyan-300 text-gray-900 font-medium rounded-lg shadow-lg hover:from-teal-500 hover:to-cyan-400 transition duration-300 flex items-center">
                       <span>Join Session</span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4 ml-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
                       </svg>
                     </button>
                   </div>
