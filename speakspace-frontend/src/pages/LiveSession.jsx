@@ -123,7 +123,8 @@ const LiveSession = () => {
   const startSession = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/sessions/start/${id}`
+        `http://localhost:5000/api/sessions/start/${id}`,
+        { userId: user._id }
       );
       setSession(res.data.session);
     } catch (err) {

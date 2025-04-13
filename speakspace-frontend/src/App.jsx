@@ -12,11 +12,13 @@ import LiveSession from "./pages/LiveSession";
 import TimeUp from "./pages/TimeUp";
 import Analytics from "./pages/Analytics";
 import Hero from "./components/Hero";
+import JitsiMeet from "./components/JitsiMeet";
 
 function App() {
   return (
     <>
       <Navbar />
+      {/* <JitsiMeet roomName="MyCustomRoom001" /> */}
       <Routes>
         <Route path="/" element={<Hero />} />
         <Route path="/login" element={<Login />} />
