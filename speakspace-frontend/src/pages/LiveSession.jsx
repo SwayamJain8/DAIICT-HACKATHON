@@ -315,11 +315,11 @@ const LiveSession = () => {
                   />
                   <button
                     onClick={sendMessage}
-                    className="px-4 py-3 bg-gradient-to-r from-teal-400 to-cyan-300 text-gray-900 font-bold rounded-r-lg hover:from-teal-500 hover:to-cyan-400 transition duration-300"
+                    className="px-4 py-3  bg-gradient-to-r from-teal-400 to-cyan-300 text-gray-900 font-bold rounded-r-lg hover:from-teal-500 hover:to-cyan-400 transition duration-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
+                      className="h-5 w-5 rotate-90"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
