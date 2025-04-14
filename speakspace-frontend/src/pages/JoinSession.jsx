@@ -13,7 +13,9 @@ const JoinSession = () => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/sessions/${id}`);
+        const res = await axios.get(
+          `https://speakspace-api.vercel.app/api/sessions/${id}`
+        );
         setSession(res.data);
         setIsLoading(false);
       } catch (err) {
@@ -29,9 +31,12 @@ const JoinSession = () => {
     setIsJoining(true);
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      await axios.post(`http://localhost:5000/api/sessions/join/${id}`, {
-        userId: user._id,
-      });
+      await axios.post(
+        `https://speakspace-api.vercel.app/api/sessions/join/${id}`,
+        {
+          userId: user._id,
+        }
+      );
       navigate(`/session/${id}`);
     } catch (err) {
       console.error("Joining session failed", err);

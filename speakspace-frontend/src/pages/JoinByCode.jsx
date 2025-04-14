@@ -20,7 +20,7 @@ const JoinByCode = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/sessions/joinByCode",
+        "https://speakspace-api.vercel.app/api/sessions/joinByCode",
         { sessionCode, userId: user._id }
       );
       navigate(`/join/${res.data._id}`);

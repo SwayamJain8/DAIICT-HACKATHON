@@ -17,7 +17,7 @@ const Dashboard = () => {
       if (storedUser.role === "moderator") {
         axios
           .get(
-            `http://localhost:5000/api/sessions/mySessions?userId=${storedUser._id}`
+            `https://speakspace-api.vercel.app/api/sessions/mySessions?userId=${storedUser._id}`
           )
           .then((res) => {
             setCreatedSessions(res.data);

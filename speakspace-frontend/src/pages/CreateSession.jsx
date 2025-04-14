@@ -22,14 +22,17 @@ const CreateSession = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:5000/api/sessions/create", {
-        topic,
-        createdBy: user._id,
-        evaluator: null,
-        duration,
-        sessionCode,
-        isPublic,
-      });
+      await axios.post(
+        "https://speakspace-api.vercel.app/api/sessions/create",
+        {
+          topic,
+          createdBy: user._id,
+          evaluator: null,
+          duration,
+          sessionCode,
+          isPublic,
+        }
+      );
       navigate("/dashboard");
     } catch (err) {
       setError(

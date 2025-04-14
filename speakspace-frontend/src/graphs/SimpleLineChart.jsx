@@ -13,7 +13,7 @@ export default function SimpleLineChart() {
       const user = JSON.parse(localStorage.getItem("user"));
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/feedback/user/${user._id}`
+          `https://speakspace-api.vercel.app/api/feedback/user/${user._id}`
         );
         const feedbacks = res.data;
 

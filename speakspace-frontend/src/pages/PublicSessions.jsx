@@ -13,7 +13,7 @@ const PublicSessions = () => {
     const fetchPublicSessions = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/sessions/public"
+          "https://speakspace-api.vercel.app/api/sessions/public"
         );
         setSessions(res.data);
         setIsLoading(false);

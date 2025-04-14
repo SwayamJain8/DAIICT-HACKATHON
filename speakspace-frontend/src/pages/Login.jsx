@@ -21,10 +21,13 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        "https://speakspace-api.vercel.app/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
       // Store in localStorage
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);

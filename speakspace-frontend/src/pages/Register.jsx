@@ -23,12 +23,15 @@ const Register = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
-        name,
-        email,
-        password,
-        role,
-      });
+      const res = await axios.post(
+        "https://speakspace-api.vercel.app/api/auth/register",
+        {
+          name,
+          email,
+          password,
+          role,
+        }
+      );
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token", res.data.token);
       setUser(res.data.user);

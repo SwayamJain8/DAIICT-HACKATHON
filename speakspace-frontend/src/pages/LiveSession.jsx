@@ -4,7 +4,7 @@ import axios from "axios";
 import socket from "../socket";
 import FeedbackForm from "../components/FeedbackForm";
 import AIAssistant from "../components/AIAssistant";
-import { JitsiMeeting } from '@jitsi/react-sdk';
+import { JitsiMeeting } from "@jitsi/react-sdk";
 
 const LiveSession = () => {
   const { id } = useParams();
@@ -35,10 +35,12 @@ const LiveSession = () => {
     const fetchSession = async () => {
       try {
         setIsLoading(true);
-        const res = await axios.get(`http://localhost:5000/api/sessions/${id}`);
+        const res = await axios.get(
+          `https://speakspace-api.vercel.app/api/sessions/${id}`
+        );
         setSession({
           ...res.data,
-          videoCallStarted: false
+          videoCallStarted: false,
         });
         setIsLoading(false);
       } catch (err) {
@@ -107,9 +109,9 @@ const LiveSession = () => {
   // Start video call
   const startVideoCall = () => {
     setIsVideoCallActive(true);
-    setSession(prev => ({
+    setSession((prev) => ({
       ...prev,
-      videoCallStarted: true
+      videoCallStarted: true,
     }));
     socket.emit("videoCallStarted", { sessionId: id, user });
   };
@@ -122,9 +124,9 @@ const LiveSession = () => {
   // End video call for everyone (moderator only)
   const endVideoCallForAll = () => {
     setIsVideoCallActive(false);
-    setSession(prev => ({
+    setSession((prev) => ({
       ...prev,
-      videoCallStarted: false
+      videoCallStarted: false,
     }));
     socket.emit("videoCallEnded", { sessionId: id, user });
   };
@@ -138,18 +140,18 @@ const LiveSession = () => {
   useEffect(() => {
     socket.on("videoCallStarted", ({ user: starterUser }) => {
       if (user._id !== starterUser._id) {
-        setSession(prev => ({
+        setSession((prev) => ({
           ...prev,
-          videoCallStarted: true
+          videoCallStarted: true,
         }));
       }
     });
 
     socket.on("videoCallEnded", () => {
       // Only end call for everyone if moderator ends it
-      setSession(prev => ({
+      setSession((prev) => ({
         ...prev,
-        videoCallStarted: false
+        videoCallStarted: false,
       }));
       setIsVideoCallActive(false);
     });
@@ -185,7 +187,7 @@ const LiveSession = () => {
   const startSession = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/sessions/start/${id}`,
+        `https://speakspace-api.vercel.app/api/sessions/start/${id}`,
         { userId: user._id }
       );
       setSession(res.data.session);
@@ -199,9 +201,12 @@ const LiveSession = () => {
   const leaveSession = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      await axios.post(`http://localhost:5000/api/sessions/leave/${id}`, {
-        userId: user._id,
-      });
+      await axios.post(
+        `https://speakspace-api.vercel.app/api/sessions/leave/${id}`,
+        {
+          userId: user._id,
+        }
+      );
       socket.emit("leaveRoom", { sessionId: id, user });
       navigate("/dashboard");
     } catch (err) {
@@ -311,7 +316,11 @@ const LiveSession = () => {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold text-gray-200">Video Call</h3>
                 <button
-                  onClick={user.role === "moderator" ? endVideoCallForAll : leaveVideoCall}
+                  onClick={
+                    user.role === "moderator"
+                      ? endVideoCallForAll
+                      : leaveVideoCall
+                  }
                   className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
                 >
                   {user.role === "moderator" ? "End Call" : "Leave Call"}
@@ -321,7 +330,7 @@ const LiveSession = () => {
                 <JitsiMeeting
                   domain="meet.jit.si"
                   roomName={`speakspace-${id}`}
-                  containerStyle={{ width: '100%', height: '100%' }}
+                  containerStyle={{ width: "100%", height: "100%" }}
                   configOverwrite={{
                     startWithAudioMuted: true,
                     startWithVideoMuted: true,
@@ -330,18 +339,39 @@ const LiveSession = () => {
                   }}
                   getIFrameRef={(node) => {
                     if (node) {
-                      node.style.height = '100%';
-                      node.style.width = '100%';
-                      node.style.border = 'none';
+                      node.style.height = "100%";
+                      node.style.width = "100%";
+                      node.style.border = "none";
                     }
                   }}
                   interfaceConfigOverwrite={{
                     TOOLBAR_BUTTONS: [
-                      'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
-                      'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
-                      'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
-                      'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
-                      'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone'
+                      "microphone",
+                      "camera",
+                      "closedcaptions",
+                      "desktop",
+                      "fullscreen",
+                      "fodeviceselection",
+                      "hangup",
+                      "profile",
+                      "chat",
+                      "recording",
+                      "livestreaming",
+                      "etherpad",
+                      "sharedvideo",
+                      "settings",
+                      "raisehand",
+                      "videoquality",
+                      "filmstrip",
+                      "invite",
+                      "feedback",
+                      "stats",
+                      "shortcuts",
+                      "tileview",
+                      "videobackgroundblur",
+                      "download",
+                      "help",
+                      "mute-everyone",
                     ],
                   }}
                 />
@@ -513,28 +543,31 @@ const LiveSession = () => {
                         Start Video Call
                       </button>
                     )}
-                    {(user.role === "participant" || user.role === "evaluator") && !isVideoCallActive && session.videoCallStarted && (
-                      <button
-                        onClick={joinVideoCall}
-                        className="w-full p-3 bg-gradient-to-r from-blue-400 to-indigo-300 text-gray-900 font-bold rounded-lg hover:from-blue-500 hover:to-indigo-400 transition duration-300 shadow-lg flex items-center justify-center"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-2"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+                    {(user.role === "participant" ||
+                      user.role === "evaluator") &&
+                      !isVideoCallActive &&
+                      session.videoCallStarted && (
+                        <button
+                          onClick={joinVideoCall}
+                          className="w-full p-3 bg-gradient-to-r from-blue-400 to-indigo-300 text-gray-900 font-bold rounded-lg hover:from-blue-500 hover:to-indigo-400 transition duration-300 shadow-lg flex items-center justify-center"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                        Join Video Call
-                      </button>
-                    )}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                            />
+                          </svg>
+                          Join Video Call
+                        </button>
+                      )}
                   </div>
                 )}
 
