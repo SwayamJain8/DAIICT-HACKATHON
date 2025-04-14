@@ -29,7 +29,7 @@ app.use("/api/ai", require("./routes/aiRoutes"));
 // Create HTTP server and integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "*" },
+  cors: { origin: "htttps://speakspace8.vercel.app" },
 });
 
 // Save io instance globally for use in controllers
