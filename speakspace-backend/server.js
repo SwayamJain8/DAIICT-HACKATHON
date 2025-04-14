@@ -14,6 +14,13 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/", (req, res) => {
+  res.send({
+    message: "SpeakSpace API is running",
+    activeStatus: true,
+    error: false,
+  });
+});
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/sessions", require("./routes/sessionRoutes"));
 app.use("/api/feedback", require("./routes/feedbackRoutes"));
